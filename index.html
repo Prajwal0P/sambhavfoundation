@@ -752,8 +752,109 @@
             opacity: 0.3;
         }
         
+        /* Mobile Menu Styles */
+        .mobile-menu-container {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            max-width: 320px;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            z-index: 40;
+            transition: right 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
+            padding: 80px 30px 30px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .mobile-menu-container.active {
+            right: 0;
+        }
+        
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 35;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .mobile-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .mobile-nav a {
+            color: #000;
+            font-size: 1.2rem;
+            font-weight: 500;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 107, 53, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-nav a:hover {
+            color: #FF6B35;
+            transform: translateX(5px);
+        }
+        
+        .close-menu {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #000;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .close-menu:hover {
+            color: #FF6B35;
+            transform: rotate(90deg);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
+            .section-spacing {
+                padding-top: 4rem;
+                padding-bottom: 4rem;
+            }
+            
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            
+            .logo img {
+                width: 150px !important;
+            }
+            
+            .circle-animation {
+                width: 250px;
+                height: 250px;
+                margin: 0 auto;
+            }
+            
+            .circle-inner span {
+                font-size: 1rem;
+            }
+            
             .carousel-3d-container {
                 height: 280px;
             }
@@ -797,6 +898,51 @@
             .company-logo img[src*="accenture"] {
                 padding: 6px;
             }
+            
+            .card-spacing {
+                padding: 1.5rem;
+            }
+            
+            .grid-spacing {
+                gap: 1.5rem;
+            }
+            
+            .footer-spacing {
+                padding-top: 3rem;
+                padding-bottom: 3rem;
+            }
+            
+            .scroll-indicator {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .section-spacing {
+                padding-top: 3rem;
+                padding-bottom: 3rem;
+            }
+            
+            .circle-animation {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .circle-inner {
+                padding: 15px;
+            }
+            
+            .circle-inner span {
+                font-size: 0.9rem;
+            }
+            
+            .card-spacing {
+                padding: 1rem;
+            }
+            
+            .button-spacing {
+                padding: 0.75rem 1.5rem;
+            }
         }
 
         /* Logo Animation */
@@ -816,6 +962,24 @@
             <div class="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
             <p class="text-black font-semibold">Loading Sambhav Foundation...</p>
         </div>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+    <!-- Mobile Menu Container -->
+    <div class="mobile-menu-container" id="mobileMenuContainer">
+        <button class="close-menu" id="closeMenu">
+            <i class="fas fa-times"></i>
+        </button>
+        <nav class="mobile-nav">
+            <a href="#home" class="mobile-nav-link">Home</a>
+            <a href="#about" class="mobile-nav-link">About Us</a>
+            <a href="#courses" class="mobile-nav-link">Courses</a>
+            <a href="#facilities" class="mobile-nav-link">Facilities</a>
+            <a href="#enrollment" class="mobile-nav-link">Enrollment</a>
+            <a href="#contact" class="mobile-nav-link">Contact</a>
+        </nav>
     </div>
 
     <!-- Animated Background -->
@@ -856,7 +1020,7 @@
                         <li><a href="#contact" class="text-black hover:text-orange-500 transition-colors duration-300 font-medium">Contact</a></li>
                     </ul>
                 </nav>
-                <div class="mobile-menu md:hidden text-2xl text-orange-500 cursor-pointer">
+                <div class="mobile-menu md:hidden text-2xl text-orange-500 cursor-pointer" id="mobileMenuBtn">
                     <i class="fas fa-bars"></i>
                 </div>
             </div>
@@ -1457,6 +1621,27 @@
                 logo: "./images/ab-associates.jpg"
             }
         ];
+
+        // Mobile menu functionality
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenuContainer = document.getElementById('mobileMenuContainer');
+        const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+        const closeMenu = document.getElementById('closeMenu');
+        
+        function toggleMobileMenu() {
+            mobileMenuContainer.classList.toggle('active');
+            mobileMenuOverlay.classList.toggle('active');
+            document.body.style.overflow = mobileMenuContainer.classList.contains('active') ? 'hidden' : '';
+        }
+        
+        mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        closeMenu.addEventListener('click', toggleMobileMenu);
+        mobileMenuOverlay.addEventListener('click', toggleMobileMenu);
+        
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', toggleMobileMenu);
+        });
 
         // Initialize the carousel
         document.addEventListener('DOMContentLoaded', function() {
